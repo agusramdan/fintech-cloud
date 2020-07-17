@@ -7,23 +7,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ramdan.project.fintech.transfer.controller.TransferController;
 import ramdan.project.fintech.transfer.dto.*;
+import ramdan.project.fintech.transfer.repository.AccountRepositry;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 
+import static javax.transaction.Transactional.TxType.REQUIRED;
+import static javax.transaction.Transactional.TxType.SUPPORTS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 class TransferApplicationTests {
 
 	@Autowired
+	private AccountRepositry accountRepositry;
+
+	@Autowired
 	private TransferController transferController;
 
 	@Test
 	@DisplayName("TransferCommand money success")
+	@Transactional(REQUIRED)
 	void transfer_Money_success(){
-
-		val source = transferController.balance("123456789");
-		val beneficiary = transferController.balance("234567891");
+		//accountRepositry.getOne("123456789").getBalance();
+		val source = accountRepositry.getOne("123456789").getBalance();
+		val beneficiary = accountRepositry.getOne("234567891").getBalance();
 		val input = TransferCommand.builder()
 				.no("TEST-1")
 				.type(Type.TRANSFER)
@@ -34,8 +42,10 @@ class TransferApplicationTests {
 
 		transferController.transfer(input);
 
-		assertEquals(source - 10.0, transferController.balance("123456789"));
-		assertEquals( beneficiary + 10.0 , transferController.balance("234567891"));
+		assertEquals(source - 10.0,
+				accountRepositry.getOne("123456789").getBalance());
+		assertEquals( beneficiary + 10.0 ,
+				accountRepositry.getOne("234567891").getBalance());
 
 	}
 	@Test
