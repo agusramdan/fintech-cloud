@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ramdan.project.fintech.transfer.controller.TransferController;
-import ramdan.project.fintech.transfer.dto.Status;
-import ramdan.project.fintech.transfer.dto.Transfer;
-import ramdan.project.fintech.transfer.dto.Type;
+import ramdan.project.fintech.transfer.dto.*;
+
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -19,12 +19,12 @@ class TransferApplicationTests {
 	private TransferController transferController;
 
 	@Test
-	@DisplayName("Transfer data success")
-	void transfer_Data_success(){
+	@DisplayName("TransferCommand money success")
+	void transfer_Money_success(){
 
 		val source = transferController.balance("123456789");
 		val beneficiary = transferController.balance("234567891");
-		val input = Transfer.builder()
+		val input = TransferCommand.builder()
 				.no("TEST-1")
 				.type(Type.TRANSFER)
 				.source("123456789")
@@ -38,5 +38,47 @@ class TransferApplicationTests {
 		assertEquals( beneficiary + 10.0 , transferController.balance("234567891"));
 
 	}
+	@Test
+	@DisplayName("TransferCommand money 2 success")
+	void transfer_Money2_success(){
 
+		//val source = transferController.balance("123456789");
+		//val beneficiary = transferController.balance("234567891");
+		val input = TransferCommand.builder()
+				.no("TEST-2")
+				.type(Type.TRANSFER)
+				.date(new Date())
+				.source("123456789")
+				.beneficiary("234567891")
+				.amount(10.0)
+				.build();
+
+		val trx = transferController.transfer(input).getBody();
+
+		val result = transferController.getJournal("TEST-2").getBody();
+
+		assertEquals(
+				JournalDto
+						.builder()
+						.number("TEST-2")
+						.date(trx.getDate())
+						.details(
+								new DetailDto[]{
+										DetailDto.builder()
+												.number(trx.getNo())
+												.account("123456789")
+												.date(trx.getDate())
+												.amount(-10.0)
+												.build(),
+										DetailDto.builder()
+												.number(trx.getNo())
+												.account("234567891")
+												.date(trx.getDate())
+												.amount(10.0)
+												.build()
+								}
+						)
+						.build()
+				,result);
+	}
 }

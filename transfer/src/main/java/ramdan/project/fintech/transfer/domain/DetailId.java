@@ -7,5 +7,5 @@ import java.io.Serializable;
 @Data
 public class DetailId implements Serializable {
     private String number;
-    private int idx;
+    private Integer idx;
 }
