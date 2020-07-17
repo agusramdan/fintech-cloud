@@ -6,10 +6,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ramdan.project.fintech.transfer.domain.Detail;
 import ramdan.project.fintech.transfer.domain.Journal;
 import ramdan.project.fintech.transfer.dto.JournalDto;
@@ -41,16 +38,9 @@ public class TransferController {
     @Autowired
     private DetailMapper detailMapper;
 
-    @Transactional(readOnly = true)
-    @GetMapping ("/account/balance/{accountNumber}")
-    public Double balance(@PathVariable String accountNumber) {
-        val account = accountRepositry.getOne(accountNumber);
-        return account.getBalance();
-    }
-
     @Transactional()
     @PostMapping("/transfer")
-    public ResponseEntity<TransferCommand> transfer(TransferCommand command) {
+    public ResponseEntity<TransferCommand> transfer(@RequestBody TransferCommand command) {
 
         val trx = Journal.builder()
                 .number(command.getNo())
