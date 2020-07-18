@@ -12,6 +12,7 @@ import ramdan.project.fintech.transfer.domain.Journal;
 import ramdan.project.fintech.transfer.dto.JournalDto;
 import ramdan.project.fintech.transfer.dto.Status;
 import ramdan.project.fintech.transfer.dto.TransferCommand;
+import ramdan.project.fintech.transfer.exception.InvalidTransferAmountException;
 import ramdan.project.fintech.transfer.mapper.DetailMapper;
 import ramdan.project.fintech.transfer.mapper.JournalMapper;
 import ramdan.project.fintech.transfer.repository.AccountRepositry;
@@ -45,6 +46,9 @@ public class TransferController {
     public ResponseEntity<TransferCommand> transfer(@RequestBody TransferCommand command) {
 
         val amount = command.getAmount();
+        if(amount.doubleValue()<= 0.0){
+            throw new InvalidTransferAmountException();
+        }
         val trx = Journal.builder()
                 .number(command.getNo())
                 .amount(amount)

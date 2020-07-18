@@ -11,6 +11,7 @@ import ramdan.project.fintech.transfer.domain.Account;
 import ramdan.project.fintech.transfer.dto.Status;
 import ramdan.project.fintech.transfer.dto.TransferCommand;
 import ramdan.project.fintech.transfer.dto.Type;
+import ramdan.project.fintech.transfer.exception.InvalidTransferAmountException;
 import ramdan.project.fintech.transfer.repository.AccountRepositry;
 import ramdan.project.fintech.transfer.repository.DetailRepository;
 import ramdan.project.fintech.transfer.repository.JournalRepository;
@@ -18,7 +19,7 @@ import ramdan.project.fintech.transfer.repository.JournalRepository;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -72,5 +73,36 @@ public class TransferControllerUnitTest {
                 , result.getBody());
     }
 
+    @Test
+    @DisplayName("Transfer zero amount invalid.")
+    void transfer_zeroAmount_Rejected(){
+
+        assertThrows(InvalidTransferAmountException.class,()->{
+            controller.transfer(TransferCommand.builder()
+                    .no("TEST-1")
+                    .type(Type.TRANSFER)
+                    .source("123456789")
+                    .beneficiary("234567891")
+                    .amount(BigDecimal.ZERO)
+                    .status(Status.SUCCESS)
+                    .build());
+        });
+    }
+
+    @Test
+    @DisplayName("Transfer minus amount invalid.")
+    void transfer_minusAmount_Rejected(){
+
+        assertThrows(InvalidTransferAmountException.class,()->{
+            controller.transfer(TransferCommand.builder()
+                    .no("TEST-1")
+                    .type(Type.TRANSFER)
+                    .source("123456789")
+                    .beneficiary("234567891")
+                    .amount(BigDecimal.valueOf(-0.01))
+                    .status(Status.SUCCESS)
+                    .build());
+        });
+    }
 
 }

@@ -115,7 +115,7 @@ class ApplicationIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(input)))
                 .andExpect(status().isConflict())
-        //.andExpect(jsonPath("$.version", is(4)))
+                .andExpect(status().reason("Account change by another user."))
         //.andExpect(jsonPath("$.name", is("NAME UPDATE")))
         //.andExpect(jsonPath("$.limit", is(100000000.00)))
         ;

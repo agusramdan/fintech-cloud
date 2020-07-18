@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ramdan.project.fintech.transfer.dto.AccountDto;
 import ramdan.project.fintech.transfer.dto.DetailDto;
-import ramdan.project.fintech.transfer.exception.OptimisticLockingFailure;
+import ramdan.project.fintech.transfer.exception.AccountOptimisticLockingFailure;
 import ramdan.project.fintech.transfer.mapper.AccountMapper;
 import ramdan.project.fintech.transfer.mapper.DetailMapper;
 import ramdan.project.fintech.transfer.repository.AccountRepositry;
@@ -59,7 +59,7 @@ public class AccountController {
         val accountUpdate = accountMapper.toEntity(dto);
         var account = accountRepositry.getOne(accountUpdate.getNumber());
         if (!account.getVersion().equals(accountUpdate.getVersion())) {
-            throw new OptimisticLockingFailure();
+            throw new AccountOptimisticLockingFailure();
         }
         // not update balance
         accountUpdate.setBalance(null);
@@ -68,7 +68,7 @@ public class AccountController {
         try {
             accountRepositry.flush();
         } catch (OptimisticLockingFailureException ex) {
-            throw new OptimisticLockingFailure();
+            throw new AccountOptimisticLockingFailure();
         }
         val result = accountMapper.toDto(account);
         return ResponseEntity.ok(result);
