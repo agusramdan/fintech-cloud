@@ -2,4 +2,8 @@ insert into account (number,version,name,balance,limit_credit)
 values
 ('123456789',1,'',10,100000000)
 ,('234567891',1,'',10,100000000)
+,('UPDATE-INT-TEST-ACCOUNT',3,'',10,100000000)
+,('UPDATE-TEST-FAIL',3,'',10,100000000)
+,('UPDATE-INT-BAL-NOT-CHANGE',3,'UPDATE INT BAL NOT CHANGE',11,100000000)
+
 ;

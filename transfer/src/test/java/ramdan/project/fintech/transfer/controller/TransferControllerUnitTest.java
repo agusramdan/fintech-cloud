@@ -19,6 +19,7 @@ import ramdan.project.fintech.transfer.repository.AccountRepositry;
 import ramdan.project.fintech.transfer.repository.DetailRepository;
 import ramdan.project.fintech.transfer.repository.JournalRepository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,12 +42,12 @@ public class TransferControllerUnitTest {
         given(accountRepositry.getOne("123456789"))
                 .willReturn(Account
                         .builder()
-                        .balance(10.0)
+                        .balance(BigDecimal.TEN)
                         .build());
         given(accountRepositry.getOne("234567891"))
                 .willReturn(Account
                         .builder()
-                        .balance(10.0)
+                        .balance(BigDecimal.TEN)
                         .build());
 
         val input = TransferCommand.builder()
@@ -55,7 +56,7 @@ public class TransferControllerUnitTest {
                 .type(Type.TRANSFER)
                 .source("123456789")
                 .beneficiary("234567891")
-                .amount(10.0)
+                .amount(BigDecimal.TEN)
                 .build();
 
         val result = controller.transfer(input);
@@ -66,7 +67,7 @@ public class TransferControllerUnitTest {
                 .type(Type.TRANSFER)
                 .source("123456789")
                 .beneficiary("234567891")
-                .amount(10.0)
+                .amount(BigDecimal.TEN)
                 .status(Status.SUCCESS)
                 .build()
                 ,result.getBody());

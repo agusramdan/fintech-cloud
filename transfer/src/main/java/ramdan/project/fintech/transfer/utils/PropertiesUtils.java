@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class PropertiesUtils {
-    public static Object copyNotNullProperties(Object source,Object target){
+    public static <T> T copyNotNullProperties(Object source,T target){
         BeanUtils.copyProperties(source,target,
                 PropertiesUtils.getNullPropertyNames(source));
         return target;

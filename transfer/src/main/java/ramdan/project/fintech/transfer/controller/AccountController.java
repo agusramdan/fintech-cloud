@@ -1,6 +1,7 @@
 package ramdan.project.fintech.transfer.controller;
 
 import lombok.val;
+import lombok.var;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -21,6 +22,7 @@ import ramdan.project.fintech.transfer.repository.DetailRepository;
 import ramdan.project.fintech.transfer.repository.JournalRepository;
 import ramdan.project.fintech.transfer.utils.PropertiesUtils;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @RestController
@@ -40,6 +42,10 @@ public class AccountController {
     @PostMapping("/account/create")
     public ResponseEntity<AccountDto> create(@RequestBody AccountDto dto) {
         val account = accountMapper.toEntity(dto);
+        account.setBalance(BigDecimal.ZERO);
+        if(account.getLimit()==null) {
+            account.setLimit(BigDecimal.ZERO);
+        }
         val result = accountMapper.toDto(accountRepositry.saveAndFlush(account));
         return ResponseEntity.ok(result);
     }
@@ -47,21 +53,21 @@ public class AccountController {
     @PostMapping("/account/update")
     public ResponseEntity<AccountDto> update(@RequestBody AccountDto dto) {
         val accountUpdate = accountMapper.toEntity(dto);
-        val account = accountRepositry.getOne(accountUpdate.getNumber());
+        var account = accountRepositry.getOne(accountUpdate.getNumber());
         if(!account.getVersion().equals(accountUpdate.getVersion())){
             throw new OptimisticLockingFailure();
         }
         // not update balance
         accountUpdate.setBalance(null);
-        PropertiesUtils.copyNotNullProperties(accountUpdate,account);
-        val result = accountMapper.toDto(accountRepositry.save(account));
-
+        account = PropertiesUtils.copyNotNullProperties(accountUpdate,account);
+        account = accountRepositry.save(account);
         try{
             accountRepositry.flush();
         }
         catch(OptimisticLockingFailureException ex){
             throw new OptimisticLockingFailure();
         }
+        val result = accountMapper.toDto(account);
         return ResponseEntity.ok(result);
     }
 
