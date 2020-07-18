@@ -19,12 +19,11 @@ public class Account implements Serializable {
     @Id
     private String number;
     @Version
-
     private Long version;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date lastUpdate;
     private String name;
     private BigDecimal balance;
     @Column(name = "limit_credit")
-    private BigDecimal limit; // limit of credit
+    private BigDecimal limit; // limit of credit limit negatif balance.
 }

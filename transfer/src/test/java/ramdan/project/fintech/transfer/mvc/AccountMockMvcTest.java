@@ -7,11 +7,13 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
+import org.mockito.BDDMockito;
 import org.mockito.internal.hamcrest.HamcrestArgumentMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ramdan.project.fintech.transfer.domain.Account;
@@ -77,27 +79,51 @@ public class AccountMockMvcTest {
 //        ;
 //    }
 //
-//    @Test
-//    void account_update_success() throws Exception {
-//        val input = AccountDto.builder()
-//                .number("UPDATE-TEST-ACCOUNT")
-//                .name("UPDATE TEST ACCOUNT")
-//                .version(1L)
-//                .build();
-//
-//        given(accountRepositry.save(ArgumentMatchers.any()))
-//                .willReturn(Account
-//                        .builder()
-//                        .number("ADD-TEST-ACCOUNT")
-//                        .name("UPDATE TEST ACCOUNT")
-//                        .version(2L)
-//                        .build());
-//
-//        mockMvc.perform(post("/account/create")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(toJson(input)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.version", is(2)))
-//        ;
-//    }
+@Test
+void account_update1_conflict() throws Exception {
+    val input = AccountDto.builder()
+            .number("UPDATE-TEST-ACCOUNT")
+            .name("UPDATE TEST ACCOUNT")
+            .version(1L)
+            .build();
+
+    given(accountRepositry.getOne(ArgumentMatchers.any()))
+            .willReturn(Account
+                    .builder()
+                    .number("UPDATE-TEST-ACCOUNT")
+                    .name("UPDATE TEST ACCOUNT")
+                    .version(2L)
+                    .build());
+
+
+    mockMvc.perform(post("/account/update")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(toJson(input)))
+            .andExpect(status().isConflict())
+    ;
+}
+    @Test
+    void account_update2_conflict() throws Exception {
+        val input = AccountDto.builder()
+                .number("UPDATE-TEST-ACCOUNT")
+                .name("UPDATE TEST ACCOUNT")
+                .version(1L)
+                .build();
+
+        given(accountRepositry.getOne(ArgumentMatchers.any()))
+                .willReturn(Account
+                        .builder()
+                        .number("UPDATE-TEST-ACCOUNT")
+                        .name("UPDATE TEST ACCOUNT")
+                        .version(1L)
+                        .build());
+        BDDMockito.doThrow(OptimisticLockingFailureException.class)
+                .when(accountRepositry).flush();
+
+        mockMvc.perform(post("/account/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(input)))
+                .andExpect(status().isConflict())
+        ;
+    }
 }

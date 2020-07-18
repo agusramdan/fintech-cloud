@@ -16,13 +16,13 @@ import java.util.Date;
 @Builder
 @Entity
 @IdClass(DetailId.class)
-
 public class Detail implements Serializable {
     @Id
     private String number;
     @Id
     private Integer idx;
     @Temporal(value = TemporalType.TIMESTAMP)
+    @Column (name ="trx_time")
     private Date date;
     private String account;
     private BigDecimal amount;

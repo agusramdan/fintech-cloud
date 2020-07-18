@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +26,7 @@ import ramdan.project.fintech.transfer.utils.PropertiesUtils;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 public class AccountController {
@@ -33,6 +36,12 @@ public class AccountController {
 
     @Autowired
     private AccountMapper accountMapper;
+
+    @Autowired
+    private DetailRepository detailRepositry;
+
+    @Autowired
+    private DetailMapper detailMapper;
 
     @GetMapping("/account/{account}")
     public ResponseEntity<AccountDto> get(@PathVariable String account) {
@@ -72,22 +81,13 @@ public class AccountController {
     }
 
     @Transactional(readOnly = true)
-    @GetMapping("/account/history")
-    public ResponseEntity<DetailDto> list(String number, Date from, Date to) {
+    @GetMapping("/account/history/{account}")
+    public ResponseEntity<List<DetailDto>> history(
+            @PathVariable String account,
+            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date from,
+            @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd")Date to) {
 
-//        val journal = journalRepository.getOne(number);
-//        val journalDto = journalMapper.toDto(journal);
-//
-//        val details = detailRepository.findAll(Example.of(
-//                Detail.builder().number(number).build())
-//                , Sort.by("idx")
-//        );
-//
-//        journalDto.setDetails(detailMapper.toDto(details.toArray(new Detail[0])));
-//
-//        return ResponseEntity.ok(
-//                journalDto
-//        );
-        return null;
+        val details = detailRepositry.findAllByAccount(account,from,to);
+        return ResponseEntity.ok(detailMapper.toDto(details));
    }
 }

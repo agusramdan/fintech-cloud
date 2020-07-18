@@ -147,90 +147,26 @@ class ApplicationIntegrationTest {
 		;
 
 	}
-	//UPDATE-INT-TEST-ACCOUNT
-//	@Autowired
-//	private AccountRepositry accountRepositry;
-//
-//	@Autowired
-//	private TransferController transferController;
-//
-//	@Test
-//	@DisplayName("TransferCommand money success")
-//	@Transactional(REQUIRED)
-//	void transfer_Money_success(){
-//		//accountRepositry.getOne("123456789").getBalance();
-//		val source = accountRepositry.getOne("123456789").getBalance();
-//		val beneficiary = accountRepositry.getOne("234567891").getBalance();
-//		val input = TransferCommand.builder()
-//				.no("TEST-1")
-//				.type(Type.TRANSFER)
-//				.source("123456789")
-//				.beneficiary("234567891")
-//				.amount(10.0)
-//				.build();
-//
-//		transferController.transfer(input);
-//
-//		assertEquals(source - 10.0,
-//				accountRepositry.getOne("123456789").getBalance());
-//		assertEquals( beneficiary + 10.0 ,
-//				accountRepositry.getOne("234567891").getBalance());
-//
-//	}
-//	@Test
-//	@DisplayName("TransferCommand money 2 success")
-//	@Transactional(REQUIRED)
-//	void transfer_Money2_success(){
-//
-//
-//		val input = TransferCommand.builder()
-//				.no("TEST-2")
-//				.type(Type.TRANSFER)
-//				.date(new Date())
-//				.source("123456789")
-//				.beneficiary("234567891")
-//				.amount(10.0)
-//				.remark1("r1")
-//				.remark1("r2")
-//				.build();
-//
-//		val trx = transferController.transfer(input).getBody();
-//
-//		val result = transferController.getJournal("TEST-2").getBody();
-//
-//		val source = accountRepositry.getOne("123456789").getBalance();
-//		val beneficiary = accountRepositry.getOne("234567891").getBalance();
-//
-//		assertEquals(
-//				JournalDto
-//						.builder()
-//						.number("TEST-2")
-//						.date(trx.getDate())
-//						.remark1(trx.getRemark1())
-//						.remark2(trx.getRemark2())
-//						.details(
-//								new DetailDto[]{
-//										DetailDto.builder()
-//												.number(trx.getNo())
-//												.account("123456789")
-//												.date(trx.getDate())
-//												.amount(-10.0)
-//												.balance(source)
-//												.remark1(trx.getRemark1())
-//												.remark2(trx.getRemark2())
-//												.build(),
-//										DetailDto.builder()
-//												.number(trx.getNo())
-//												.account("234567891")
-//												.date(trx.getDate())
-//												.amount(10.0)
-//												.balance(beneficiary)
-//												.remark1(trx.getRemark1())
-//												.remark2(trx.getRemark2())
-//												.build()
-//								}
-//						)
-//						.build()
-//				,result);
-//	}
+
+	@Test
+	void list_account_history() throws Exception {
+
+		mockMvc.perform(get("/account/history/HISTORY-ACCOUNT-D")
+				.param("from","2020-01-01")
+				.param("to","2020-01-31"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].amount", is(-10.00)))
+				.andExpect(jsonPath("$[0].balance", is(90.00)))
+		;
+
+		mockMvc.perform(get("/account/history/HISTORY-ACCOUNT-K")
+				.param("from","2020-01-01")
+				.param("to","2020-01-31"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].amount", is(10.00)))
+				.andExpect(jsonPath("$[0].balance", is(110.00)))
+		;
+
+	}
+
 }
