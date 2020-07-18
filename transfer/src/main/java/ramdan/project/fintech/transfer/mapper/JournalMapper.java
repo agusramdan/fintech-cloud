@@ -7,11 +7,6 @@ import ramdan.project.fintech.transfer.dto.JournalDto;
 @Mapper(componentModel = "spring")
 public interface JournalMapper extends EntityMapper<JournalDto, Journal> {
 
-    //JournalMapper INSTANCE = Mappers.getMapper( JournalMapper.class );
-    //@Mapping(source = "numberOfSeats", target = "seatCount")
-    //JournalDto transferToTransactionDto(Journal transfer);
-
-    //Journal commandToJournal(TransferCommand command);
     default Journal fromNumber(final String id) {
 
         if (id == null) {

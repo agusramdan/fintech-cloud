@@ -18,6 +18,7 @@ import ramdan.project.fintech.transfer.repository.AccountRepositry;
 import ramdan.project.fintech.transfer.repository.DetailRepository;
 import ramdan.project.fintech.transfer.repository.JournalRepository;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @RestController
@@ -44,14 +45,16 @@ public class TransferController {
 
         val trx = Journal.builder()
                 .number(command.getNo())
+                .remark1(command.getRemark1())
+                .remark2(command.getRemark2())
                 .build();
         val amount = command.getAmount();
         val source = accountRepositry.getOne(command.getSource());
-        source.setBalance(source.getBalance() - amount);
+        source.setBalance(source.getBalance().subtract(amount) );
         accountRepositry.save(source);
 
         val beneficiary = accountRepositry.getOne(command.getBeneficiary());
-        beneficiary.setBalance(beneficiary.getBalance() + amount);
+        beneficiary.setBalance(beneficiary.getBalance().add(amount));
         accountRepositry.save(beneficiary);
 
         if (trx.getDate() == null) {
@@ -65,7 +68,10 @@ public class TransferController {
                         .date(trx.getDate())
                         .idx(0)
                         .account(source.getNumber())
-                        .amount(amount * -1)
+                        .amount(amount.subtract(BigDecimal.valueOf(-1L)))
+                        .balance(source.getBalance())
+                        .remark1(trx.getRemark1())
+                        .remark2(trx.getRemark2())
                         .build()
         );
 
@@ -76,6 +82,9 @@ public class TransferController {
                         .idx(1)
                         .account(beneficiary.getNumber())
                         .amount(amount)
+                        .balance(beneficiary.getBalance())
+                        .remark1(trx.getRemark1())
+                        .remark2(trx.getRemark2())
                         .build()
         );
         command.setDate(trx.getDate());

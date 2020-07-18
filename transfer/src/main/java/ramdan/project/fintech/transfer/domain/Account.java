@@ -5,11 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Data
 @Entity
@@ -20,9 +19,12 @@ public class Account implements Serializable {
     @Id
     private String number;
     @Version
+
     private Long version;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date lastUpdate;
     private String name;
-    private Double balance;
+    private BigDecimal balance;
     @Column(name = "limit_credit")
-    private Double limit; // limit of credit
+    private BigDecimal limit; // limit of credit
 }

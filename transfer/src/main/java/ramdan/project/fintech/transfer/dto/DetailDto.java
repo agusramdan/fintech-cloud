@@ -16,6 +16,7 @@ public class DetailDto {
     private Date date;
     private String account;
     private Double amount;
+    private Double balance;
     private String remark1;
     private String remark2;
 }

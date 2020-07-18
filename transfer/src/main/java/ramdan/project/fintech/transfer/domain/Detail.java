@@ -5,10 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -23,9 +22,11 @@ public class Detail implements Serializable {
     private String number;
     @Id
     private Integer idx;
+    @Temporal(value = TemporalType.TIMESTAMP)
     private Date date;
     private String account;
-    private Double amount;
+    private BigDecimal amount;
+    private BigDecimal balance;
     private String remark1 = "";
     private String remark2 = "";
 }

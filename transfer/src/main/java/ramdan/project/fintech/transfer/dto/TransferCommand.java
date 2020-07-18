@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -18,7 +19,7 @@ public class TransferCommand {
     private Date date;
     private String source;
     private String beneficiary;
-    private Double amount;
+    private BigDecimal amount;
     private String remark1;
     private String remark2;
 }
