@@ -6,34 +6,21 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.val;
 import org.junit.jupiter.api.Test;
-import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.when;
-import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static ramdan.project.fintech.transfer.dto.Status.SUCCESS;
-
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import ramdan.project.fintech.transfer.controller.TransferController;
-import ramdan.project.fintech.transfer.dto.Status;
 import ramdan.project.fintech.transfer.dto.TransferCommand;
 import ramdan.project.fintech.transfer.dto.Type;
-import ramdan.project.fintech.transfer.repository.AccountRepositry;
-import ramdan.project.fintech.transfer.repository.DetailRepository;
-import ramdan.project.fintech.transfer.repository.JournalRepository;
 
 import java.math.BigDecimal;
+
+import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ramdan.project.fintech.transfer.dto.Status.SUCCESS;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -55,8 +42,9 @@ public class TransferMockMvcTest {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        return ow.writeValueAsString(anObject );
+        return ow.writeValueAsString(anObject);
     }
+
     @Test
     void testSendMoney() throws Exception {
         val input = TransferCommand.builder()

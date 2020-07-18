@@ -8,7 +8,6 @@ import lombok.val;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
-import org.mockito.internal.hamcrest.HamcrestArgumentMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,31 +17,20 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ramdan.project.fintech.transfer.domain.Account;
 import ramdan.project.fintech.transfer.dto.AccountDto;
-import ramdan.project.fintech.transfer.dto.TransferCommand;
-import ramdan.project.fintech.transfer.dto.Type;
 import ramdan.project.fintech.transfer.repository.AccountRepositry;
 
-import java.math.BigDecimal;
-
-import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ramdan.project.fintech.transfer.dto.Status.SUCCESS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 //@WebMvcTest(TransferController.class)
 public class AccountMockMvcTest {
-    @Autowired
-    private MockMvc mockMvc;
-
     @MockBean
     AccountRepositry accountRepositry;
+    @Autowired
+    private MockMvc mockMvc;
 //    @MockBean
 //    JournalRepository journalRepository;
 //    @MockBean
@@ -54,9 +42,10 @@ public class AccountMockMvcTest {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        return ow.writeValueAsString(anObject );
+        return ow.writeValueAsString(anObject);
     }
-//    @Test
+
+    //    @Test
 //    void account_create_success() throws Exception {
 //        val input = AccountDto.builder()
 //                .number("ADD-TEST-ACCOUNT")
@@ -79,29 +68,30 @@ public class AccountMockMvcTest {
 //        ;
 //    }
 //
-@Test
-void account_update1_conflict() throws Exception {
-    val input = AccountDto.builder()
-            .number("UPDATE-TEST-ACCOUNT")
-            .name("UPDATE TEST ACCOUNT")
-            .version(1L)
-            .build();
+    @Test
+    void account_update1_conflict() throws Exception {
+        val input = AccountDto.builder()
+                .number("UPDATE-TEST-ACCOUNT")
+                .name("UPDATE TEST ACCOUNT")
+                .version(1L)
+                .build();
 
-    given(accountRepositry.getOne(ArgumentMatchers.any()))
-            .willReturn(Account
-                    .builder()
-                    .number("UPDATE-TEST-ACCOUNT")
-                    .name("UPDATE TEST ACCOUNT")
-                    .version(2L)
-                    .build());
+        given(accountRepositry.getOne(ArgumentMatchers.any()))
+                .willReturn(Account
+                        .builder()
+                        .number("UPDATE-TEST-ACCOUNT")
+                        .name("UPDATE TEST ACCOUNT")
+                        .version(2L)
+                        .build());
 
 
-    mockMvc.perform(post("/account/update")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(toJson(input)))
-            .andExpect(status().isConflict())
-    ;
-}
+        mockMvc.perform(post("/account/update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(input)))
+                .andExpect(status().isConflict())
+        ;
+    }
+
     @Test
     void account_update2_conflict() throws Exception {
         val input = AccountDto.builder()

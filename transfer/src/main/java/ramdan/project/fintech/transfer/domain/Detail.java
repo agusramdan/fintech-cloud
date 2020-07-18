@@ -22,7 +22,7 @@ public class Detail implements Serializable {
     @Id
     private Integer idx;
     @Temporal(value = TemporalType.TIMESTAMP)
-    @Column (name ="trx_time")
+    @Column(name = "trx_time")
     private Date date;
     private String account;
     private BigDecimal amount;

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -14,6 +15,7 @@ import java.util.Date;
 public class JournalDto {
     private String number;
     private Date date;
+    private BigDecimal amount;
     private String remark1;
     private String remark2;
     private DetailDto[] details;

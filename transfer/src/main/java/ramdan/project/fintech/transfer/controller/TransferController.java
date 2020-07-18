@@ -24,6 +24,7 @@ import java.util.Date;
 @RestController
 public class TransferController {
 
+    private static BigDecimal MINUS_ONE = BigDecimal.valueOf(-1);
     @Autowired
     private AccountRepositry accountRepositry;
 
@@ -43,14 +44,16 @@ public class TransferController {
     @PostMapping("/transfer")
     public ResponseEntity<TransferCommand> transfer(@RequestBody TransferCommand command) {
 
+        val amount = command.getAmount();
         val trx = Journal.builder()
                 .number(command.getNo())
+                .amount(amount)
                 .remark1(command.getRemark1())
                 .remark2(command.getRemark2())
                 .build();
-        val amount = command.getAmount();
+
         val source = accountRepositry.getOne(command.getSource());
-        source.setBalance(source.getBalance().subtract(amount) );
+        source.setBalance(source.getBalance().subtract(amount));
         accountRepositry.save(source);
 
         val beneficiary = accountRepositry.getOne(command.getBeneficiary());
@@ -68,7 +71,7 @@ public class TransferController {
                         .date(trx.getDate())
                         .idx(0)
                         .account(source.getNumber())
-                        .amount(amount.subtract(BigDecimal.valueOf(-1L)))
+                        .amount(amount.multiply(MINUS_ONE))
                         .balance(source.getBalance())
                         .remark1(trx.getRemark1())
                         .remark2(trx.getRemark2())
@@ -94,7 +97,8 @@ public class TransferController {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<JournalDto> getJournal(String number) {
+    @GetMapping("/journal/{number}")
+    public ResponseEntity<JournalDto> getJournal(@PathVariable String number) {
 
         val journal = journalRepository.getOne(number);
         val journalDto = journalMapper.toDto(journal);

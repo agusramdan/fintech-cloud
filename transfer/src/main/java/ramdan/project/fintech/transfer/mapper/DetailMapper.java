@@ -2,7 +2,6 @@ package ramdan.project.fintech.transfer.mapper;
 
 import org.mapstruct.Mapper;
 import ramdan.project.fintech.transfer.domain.Detail;
-import ramdan.project.fintech.transfer.domain.Journal;
 import ramdan.project.fintech.transfer.dto.DetailDto;
 
 @Mapper(componentModel = "spring")
