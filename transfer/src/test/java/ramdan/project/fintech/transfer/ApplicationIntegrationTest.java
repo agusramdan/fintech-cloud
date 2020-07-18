@@ -53,7 +53,7 @@ class ApplicationIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.version", is(0)))
                 .andExpect(jsonPath("$.balance", is(0)))
-                .andExpect(jsonPath("$.limit", is(0)))
+                .andExpect(jsonPath("$.overdraft", is(0)))
         ;
 
     }
@@ -64,14 +64,14 @@ class ApplicationIntegrationTest {
         val input = AccountDto.builder()
                 .number("ADD-INT-TEST-ACC-LIMIT")
                 .name("ADD INT TEST ACC LIMIT")
-                .limit(BigDecimal.valueOf(100000.00))
+                .overdraft(BigDecimal.valueOf(100000.00))
                 .build();
 
         mockMvc.perform(post("/account/create")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(input)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.limit", is(100000.00)))
+                .andExpect(jsonPath("$.overdraft", is(100000.00)))
         ;
 
     }
@@ -83,7 +83,7 @@ class ApplicationIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.version", is(3)))
                 .andExpect(jsonPath("$.name", blankOrNullString()))
-                .andExpect(jsonPath("$.limit", is(100000000.00)))
+                .andExpect(jsonPath("$.overdraft", is(100000000.00)))
         ;
 
         val input = AccountDto.builder()
@@ -98,7 +98,7 @@ class ApplicationIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.version", is(4)))
                 .andExpect(jsonPath("$.name", is("NAME UPDATE")))
-                .andExpect(jsonPath("$.limit", is(100000000.00)))
+                .andExpect(jsonPath("$.overdraft", is(100000000.00)))
         ;
 
     }

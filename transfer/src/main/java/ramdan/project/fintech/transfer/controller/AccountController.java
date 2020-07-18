@@ -46,8 +46,8 @@ public class AccountController {
     public ResponseEntity<AccountDto> create(@RequestBody AccountDto dto) {
         val account = accountMapper.toEntity(dto);
         account.setBalance(BigDecimal.ZERO);
-        if (account.getLimit() == null) {
-            account.setLimit(BigDecimal.ZERO);
+        if (account.getOverdraft() == null) {
+            account.setOverdraft(BigDecimal.ZERO);
         }
         val result = accountMapper.toDto(accountRepositry.saveAndFlush(account));
         return ResponseEntity.ok(result);

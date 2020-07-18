@@ -21,5 +21,5 @@ public class AccountDto implements Serializable {
     @JsonDeserialize(using = MoneyDeserializer.class)
     private BigDecimal balance;
     @JsonDeserialize(using = MoneyDeserializer.class)
-    private BigDecimal limit;
+    private BigDecimal overdraft;
 }

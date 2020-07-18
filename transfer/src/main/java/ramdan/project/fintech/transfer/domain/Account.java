@@ -24,6 +24,5 @@ public class Account implements Serializable {
     private Date lastUpdate;
     private String name;
     private BigDecimal balance;
-    @Column(name = "limit_credit")
-    private BigDecimal limit; // limit of credit limit negatif balance.
+    private BigDecimal overdraft; // limit of credit limit negatif balance.
 }
