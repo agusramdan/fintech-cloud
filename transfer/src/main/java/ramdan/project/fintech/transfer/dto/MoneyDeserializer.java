@@ -15,7 +15,7 @@ public class MoneyDeserializer extends JsonDeserializer<BigDecimal> {
     private NumberDeserializers.BigDecimalDeserializer delegate = NumberDeserializers.BigDecimalDeserializer.instance;
 
     //@Override
-    public BigDecimal deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public BigDecimal deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
         BigDecimal bd = delegate.deserialize(jp, ctxt);
         bd = bd.setScale(2, RoundingMode.HALF_UP);
         return bd;

@@ -1,7 +1,7 @@
 package ramdan.project.fintech.transfer.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -18,18 +18,12 @@ import ramdan.project.fintech.transfer.repository.DetailRepository;
 import ramdan.project.fintech.transfer.repository.JournalRepository;
 
 @RestController
+@AllArgsConstructor
 public class JournalController {
 
-    @Autowired
     private JournalRepository journalRepository;
-
-    @Autowired
     private JournalMapper journalMapper;
-
-    @Autowired
     private DetailRepository detailRepository;
-
-    @Autowired
     private DetailMapper detailMapper;
 
     @Transactional(readOnly = true)

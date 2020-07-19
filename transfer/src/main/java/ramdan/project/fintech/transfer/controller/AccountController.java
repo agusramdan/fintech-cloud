@@ -1,8 +1,8 @@
 package ramdan.project.fintech.transfer.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
 import lombok.var;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,24 +19,17 @@ import ramdan.project.fintech.transfer.repository.AccountRepositry;
 import ramdan.project.fintech.transfer.repository.DetailRepository;
 import ramdan.project.fintech.transfer.utils.PropertiesUtils;
 
-import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 public class AccountController {
 
-    @Autowired
     private AccountRepositry accountRepositry;
-
-    @Autowired
     private AccountMapper accountMapper;
-
-    @Autowired
     private DetailRepository detailRepositry;
-
-    @Autowired
     private DetailMapper detailMapper;
 
     @GetMapping("/account")
@@ -45,11 +38,11 @@ public class AccountController {
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .header("X-page-total-pages",String.valueOf(result.getTotalPages()))
-                .header("X-page-total-elements",String.valueOf(result.getTotalElements()))
-                .header("X-page-size",String.valueOf(result.getSize()))
-                .header("X-page-number",String.valueOf(result.getNumber()))
-                .header("X-page-sort",String.valueOf(result.getSort()))
+                .header("X-page-total-pages", String.valueOf(result.getTotalPages()))
+                .header("X-page-total-elements", String.valueOf(result.getTotalElements()))
+                .header("X-page-size", String.valueOf(result.getSize()))
+                .header("X-page-number", String.valueOf(result.getNumber()))
+                .header("X-page-sort", String.valueOf(result.getSort()))
                 .body(accountMapper.toDto(result.toList()));
     }
 
@@ -58,6 +51,7 @@ public class AccountController {
         val result = accountMapper.toDto(accountRepositry.getOne(account));
         return ResponseEntity.ok(result);
     }
+
     @PostMapping("/account/create")
     public ResponseEntity<AccountDto> create(@RequestBody AccountDto dto) {
         val account = accountMapper.toEntity(dto);
@@ -97,15 +91,14 @@ public class AccountController {
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to, Pageable pageable) {
 
-        val result = detailRepositry.findAllByAccount(account, from, to,pageable);
+        val result = detailRepositry.findAllByAccount(account, from, to, pageable);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .header("X-page-total-pages",String.valueOf(result.getTotalPages()))
-                .header("X-page-total-elements",String.valueOf(result.getTotalElements()))
-                .header("X-page-size",String.valueOf(result.getSize()))
-                .header("X-page-number",String.valueOf(result.getNumber()))
-                .header("X-page-sort",String.valueOf(result.getSort()))
+                .header("X-page-total-pages", String.valueOf(result.getTotalPages()))
+                .header("X-page-total-elements", String.valueOf(result.getTotalElements()))
+                .header("X-page-size", String.valueOf(result.getSize()))
+                .header("X-page-number", String.valueOf(result.getNumber()))
                 .body(detailMapper.toDto(result.toList()));
     }
 }

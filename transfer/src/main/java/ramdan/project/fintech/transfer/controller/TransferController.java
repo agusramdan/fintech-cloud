@@ -1,8 +1,8 @@
 package ramdan.project.fintech.transfer.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,8 +14,6 @@ import ramdan.project.fintech.transfer.dto.ReversalCommand;
 import ramdan.project.fintech.transfer.dto.Status;
 import ramdan.project.fintech.transfer.dto.TransferCommand;
 import ramdan.project.fintech.transfer.exception.*;
-import ramdan.project.fintech.transfer.mapper.DetailMapper;
-import ramdan.project.fintech.transfer.mapper.JournalMapper;
 import ramdan.project.fintech.transfer.repository.AccountRepositry;
 import ramdan.project.fintech.transfer.repository.DetailRepository;
 import ramdan.project.fintech.transfer.repository.JournalRepository;
@@ -24,44 +22,37 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @RestController
+@AllArgsConstructor
 public class TransferController {
 
     private static BigDecimal MINUS_ONE = BigDecimal.valueOf(-1);
-    @Autowired
+
     private AccountRepositry accountRepositry;
 
-    @Autowired
     private JournalRepository journalRepository;
 
-    @Autowired
-    private JournalMapper journalMapper;
-
-    @Autowired
     private DetailRepository detailRepository;
-
-    @Autowired
-    private DetailMapper detailMapper;
 
     @Transactional()
     @PostMapping("/transfer")
     public ResponseEntity<TransferCommand> transfer(@RequestBody TransferCommand command) {
 
-        switch (command.getType()){
+        switch (command.getType()) {
             case TRANSFER:
-                if(journalRepository.existsById(command.getNo())){
+                if (journalRepository.existsById(command.getNo())) {
                     throw new TransferDuplicateException();
                 }
 
                 break;
             case RESEND:
-                if(journalRepository.existsById(command.getNo())){
+                if (journalRepository.existsById(command.getNo())) {
                     command.setStatus(Status.SUCCESS);
                     return ResponseEntity.ok(command);
                 }
                 break;
             case REVERSAL:
-                default:
-                    throw new InvalidTransferTypeException();
+            default:
+                throw new InvalidTransferTypeException();
 
         }
         val amount = command.getAmount();

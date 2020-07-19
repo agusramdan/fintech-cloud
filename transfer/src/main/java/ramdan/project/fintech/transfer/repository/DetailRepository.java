@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface DetailRepository extends JpaRepository<Detail, DetailId> {
     @Query(value = "from Detail where account = :account and date between :fr and :to order by date , number,idx"
-            ,countQuery="select count(*) from Detail where account = :account and date between :fr and :to "
+            , countQuery = "select count(*) from Detail where account = :account and date between :fr and :to "
     )
     Page<Detail> findAllByAccount(String account, Date fr, Date to, Pageable pageable);
 
