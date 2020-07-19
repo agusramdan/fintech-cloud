@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ramdan.project.fintech.transfer.domain.Detail;
 import ramdan.project.fintech.transfer.dto.JournalDto;
+import ramdan.project.fintech.transfer.exception.JournalNotFoundException;
 import ramdan.project.fintech.transfer.mapper.DetailMapper;
 import ramdan.project.fintech.transfer.mapper.JournalMapper;
 import ramdan.project.fintech.transfer.repository.DetailRepository;
@@ -35,6 +36,9 @@ public class JournalController {
     @GetMapping("/journal/{number}")
     public ResponseEntity<JournalDto> getJournal(@PathVariable String number) {
 
+        if(!journalRepository.existsById(number)){
+            throw new JournalNotFoundException();
+        }
         val journal = journalRepository.getOne(number);
         val journalDto = journalMapper.toDto(journal);
 
