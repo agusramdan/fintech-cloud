@@ -48,6 +48,10 @@ public class TransferController {
 
         switch (command.getType()){
             case TRANSFER:
+                if(journalRepository.existsById(command.getNo())){
+                    throw new TransferDuplicateException();
+                }
+
                 break;
             case RESEND:
                 if(journalRepository.existsById(command.getNo())){

@@ -190,4 +190,22 @@ class TransferControllerUnitTest {
 
         assertEquals(Status.SUCCESS,result.getBody().getStatus());
     }
+
+    @Test
+    @DisplayName("transfer when transfer accepted response success")
+    void transfer_already_done(){
+        // acceop only TRANSFER OR RESEND
+        given(journalRepository.existsById("TEST-1"))
+                .willReturn(Boolean.TRUE);
+
+        assertThrows(TransferDuplicateException.class,()->controller.transfer(TransferCommand.builder()
+                .no("TEST-1")
+                .type(Type.TRANSFER)
+                .source("SOURCE-NOMONEY")
+                .beneficiary("BENEFICIARY-ACCOUNT")
+                .amount(BigDecimal.valueOf(0.01))
+                .build()));
+
+
+    }
 }
