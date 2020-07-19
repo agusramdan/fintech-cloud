@@ -1,4 +1,4 @@
-package ramdan.project.fintech.transfer;
+package ramdan.project.fintech.transfer.integration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,38 +7,100 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.val;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ramdan.project.fintech.transfer.domain.Account;
 import ramdan.project.fintech.transfer.dto.AccountDto;
-import ramdan.project.fintech.transfer.dto.ReversalCommand;
-import ramdan.project.fintech.transfer.dto.TransferCommand;
-import ramdan.project.fintech.transfer.dto.Type;
+import ramdan.project.fintech.transfer.repository.AccountRepositry;
 
 import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.blankOrNullString;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ramdan.project.fintech.transfer.utils.TestUtils.toJson;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ApplicationIntegrationTest {
-
+//@WebMvcTest(TransferController.class)
+public class AccountIntegrationTest {
+    //@MockBean
+    //AccountRepositry accountRepositry;
     @Autowired
     private MockMvc mockMvc;
+//    @MockBean
+//    JournalRepository journalRepository;
+//    @MockBean
+//    DetailRepository detailRepository;
+    //@MockBean
+    //private SendMoneyUseCase sendMoneyUseCase;
 
-    String toJson(Object anObject) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
-        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
-        return ow.writeValueAsString(anObject);
-    }
+//    String toJson(Object anObject) throws JsonProcessingException {
+//        ObjectMapper mapper = new ObjectMapper();
+//        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+//        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+//        return ow.writeValueAsString(anObject);
+//    }
+//
+//    @Test
+//    void account_update1_conflict() throws Exception {
+//        val input = AccountDto.builder()
+//                .number("UPDATE-TEST-ACCOUNT")
+//                .name("UPDATE TEST ACCOUNT")
+//                .version(1L)
+//                .build();
+//
+//        given(accountRepositry.getOne(ArgumentMatchers.any()))
+//                .willReturn(Account
+//                        .builder()
+//                        .number("UPDATE-TEST-ACCOUNT")
+//                        .name("UPDATE TEST ACCOUNT")
+//                        .version(2L)
+//                        .build());
+//
+//
+//        mockMvc.perform(post("/account/update")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(toJson(input)))
+//                .andExpect(status().isConflict())
+//        ;
+//    }
+
+//    @Test
+//    void account_update2_conflict() throws Exception {
+//        val input = AccountDto.builder()
+//                .number("UPDATE-TEST-ACCOUNT")
+//                .name("UPDATE TEST ACCOUNT")
+//                .version(1L)
+//                .build();
+//
+//        given(accountRepositry.getOne(ArgumentMatchers.any()))
+//                .willReturn(Account
+//                        .builder()
+//                        .number("UPDATE-TEST-ACCOUNT")
+//                        .name("UPDATE TEST ACCOUNT")
+//                        .version(1L)
+//                        .build());
+//        BDDMockito.doThrow(OptimisticLockingFailureException.class)
+//                .when(accountRepositry).flush();
+//
+//        mockMvc.perform(post("/account/update")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(toJson(input)))
+//                .andExpect(status().isConflict())
+//        ;
+//    }
 
     @Test
     @DisplayName("Create account success")
@@ -163,5 +225,4 @@ class ApplicationIntegrationTest {
         ;
 
     }
-
 }
