@@ -149,8 +149,7 @@ public class TransferControllerUnitTest {
         given(accountRepositry.existsById(anyString()))
                 .willReturn(Boolean.TRUE);
         given(accountRepositry.getOne("SOURCE-NOMONEY"))
-                .willReturn(Account
-                        .builder()
+                .willReturn(Account.builder()
                         .balance(BigDecimal.ZERO)
                         .overdraft(BigDecimal.ZERO)
                         .build());

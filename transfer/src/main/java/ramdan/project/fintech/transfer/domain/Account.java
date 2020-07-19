@@ -10,6 +10,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * In saving/current account balance is credit balance in accountancy.
+ * Contras with loan account. Balance is debit balance.
+ *
+ */
 @Data
 @Entity
 @AllArgsConstructor

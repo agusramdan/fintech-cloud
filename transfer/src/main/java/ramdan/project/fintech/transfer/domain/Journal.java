@@ -21,6 +21,10 @@ public class Journal implements Serializable {
     @Temporal(value = TemporalType.TIMESTAMP)
     @Column(name = "trx_time")
     private Date date;
+    private String reversal; // reversal number
+    @Column(name = "rev_time")
+    private Date reversalDate; // reversal number
+
     private BigDecimal amount;
     private String remark1;
     private String remark2;

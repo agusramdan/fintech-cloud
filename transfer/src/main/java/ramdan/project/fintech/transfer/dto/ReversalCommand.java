@@ -12,12 +12,15 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DetailDto {
-    private String number;
+public class ReversalCommand {
+    private Type type;
+    private Status status;
+    private String no;
+    private String reversal; // reversal number
     private Date date;
-    private String account;
+    private String source;
+    private String beneficiary;
     private BigDecimal amount;
-    private BigDecimal balance;
     private String remark1;
     private String remark2;
 }

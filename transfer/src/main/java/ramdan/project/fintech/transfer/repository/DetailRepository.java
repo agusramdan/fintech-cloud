@@ -11,4 +11,7 @@ import java.util.List;
 public interface DetailRepository extends JpaRepository<Detail, DetailId> {
     @Query("from Detail where account = :account and date between :fr and :to order by date , number,idx")
     List<Detail> findAllByAccount(String account, Date fr, Date to);
+
+    @Query("from Detail where number = :number order by idx")
+    List<Detail> findAllByJournal(String number);
 }
