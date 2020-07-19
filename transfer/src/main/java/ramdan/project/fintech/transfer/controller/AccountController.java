@@ -4,7 +4,9 @@ import lombok.val;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import ramdan.project.fintech.transfer.repository.AccountRepositry;
 import ramdan.project.fintech.transfer.repository.DetailRepository;
 import ramdan.project.fintech.transfer.utils.PropertiesUtils;
 
+import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -36,12 +39,25 @@ public class AccountController {
     @Autowired
     private DetailMapper detailMapper;
 
+    @GetMapping("/account")
+    public ResponseEntity<List<AccountDto>> list(Pageable pageable) {
+        val result = accountRepositry.findAll(pageable);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header("X-page-total-pages",String.valueOf(result.getTotalPages()))
+                .header("X-page-total-elements",String.valueOf(result.getTotalElements()))
+                .header("X-page-size",String.valueOf(result.getSize()))
+                .header("X-page-number",String.valueOf(result.getNumber()))
+                .header("X-page-sort",String.valueOf(result.getSort()))
+                .body(accountMapper.toDto(result.toList()));
+    }
+
     @GetMapping("/account/{account}")
     public ResponseEntity<AccountDto> get(@PathVariable String account) {
         val result = accountMapper.toDto(accountRepositry.getOne(account));
         return ResponseEntity.ok(result);
     }
-
     @PostMapping("/account/create")
     public ResponseEntity<AccountDto> create(@RequestBody AccountDto dto) {
         val account = accountMapper.toEntity(dto);
@@ -79,9 +95,17 @@ public class AccountController {
     public ResponseEntity<List<DetailDto>> history(
             @PathVariable String account,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) {
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date to, Pageable pageable) {
 
-        val details = detailRepositry.findAllByAccount(account, from, to);
-        return ResponseEntity.ok(detailMapper.toDto(details));
+        val result = detailRepositry.findAllByAccount(account, from, to,pageable);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header("X-page-total-pages",String.valueOf(result.getTotalPages()))
+                .header("X-page-total-elements",String.valueOf(result.getTotalElements()))
+                .header("X-page-size",String.valueOf(result.getSize()))
+                .header("X-page-number",String.valueOf(result.getNumber()))
+                .header("X-page-sort",String.valueOf(result.getSort()))
+                .body(detailMapper.toDto(result.toList()));
     }
 }

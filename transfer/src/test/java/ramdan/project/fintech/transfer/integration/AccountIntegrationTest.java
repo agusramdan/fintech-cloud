@@ -16,8 +16,7 @@ import static org.hamcrest.Matchers.blankOrNullString;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ramdan.project.fintech.transfer.utils.TestUtils.toJson;
 
 @SpringBootTest
@@ -213,5 +212,19 @@ class AccountIntegrationTest {
                 .andExpect(jsonPath("$[0].balance", is(110.00)))
         ;
 
+    }
+
+    @Test
+    void list_account() throws Exception {
+        mockMvc.perform(get("/account")
+                .param("number", "1")
+                .param("size", "10")
+                )
+                .andExpect(status().isOk())
+                .andExpect(header().exists("X-page-total-pages"))
+                .andExpect(header().exists("X-page-total-elements"))
+                .andExpect(header().exists("X-page-size"))
+                .andExpect(header().exists("X-page-number"))
+        ;
     }
 }
