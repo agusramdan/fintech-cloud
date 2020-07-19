@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ramdan.project.fintech.transfer.dto.AccountDto;
+import ramdan.project.fintech.transfer.dto.ReversalCommand;
 import ramdan.project.fintech.transfer.dto.TransferCommand;
 import ramdan.project.fintech.transfer.dto.Type;
 
@@ -163,29 +164,4 @@ class ApplicationIntegrationTest {
 
     }
 
-    @Test
-    void transfer_account_history() throws Exception {
-        val trf = TransferCommand.builder()
-                .no("TRF-001")
-                .type(Type.TRANSFER)
-                .source("TRF-ACCOUNT-D")
-                .amount(BigDecimal.TEN)
-                .beneficiary("TRF-ACCOUNT-K")
-                .build();
-
-        mockMvc.perform(post("/transfer")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(trf)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is("SUCCESS")))
-        ;
-
-        mockMvc.perform(get("/journal/TRF-001"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.amount", is(10.00)))
-                .andExpect(jsonPath("$.details[0].amount", is(-10.00)))
-                .andExpect(jsonPath("$.details[1].amount", is(10.00)))
-        ;
-
-    }
 }
