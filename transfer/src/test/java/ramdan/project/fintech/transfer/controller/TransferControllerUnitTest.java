@@ -11,10 +11,7 @@ import ramdan.project.fintech.transfer.domain.Account;
 import ramdan.project.fintech.transfer.dto.Status;
 import ramdan.project.fintech.transfer.dto.TransferCommand;
 import ramdan.project.fintech.transfer.dto.Type;
-import ramdan.project.fintech.transfer.exception.InsufficientFundsException;
-import ramdan.project.fintech.transfer.exception.InvalidBeneficiaryAccountException;
-import ramdan.project.fintech.transfer.exception.InvalidSourceAccountException;
-import ramdan.project.fintech.transfer.exception.InvalidTransferAmountException;
+import ramdan.project.fintech.transfer.exception.*;
 import ramdan.project.fintech.transfer.repository.AccountRepositry;
 import ramdan.project.fintech.transfer.repository.DetailRepository;
 import ramdan.project.fintech.transfer.repository.JournalRepository;
@@ -139,7 +136,6 @@ class TransferControllerUnitTest {
                 .source("SOURCE-ACCOUNT-FOUND")
                 .beneficiary("BENEFICIARY-ACCOUNT-NOT-FOUND")
                 .amount(BigDecimal.valueOf(0.01))
-                .status(Status.SUCCESS)
                 .build()));
     }
 
@@ -160,7 +156,38 @@ class TransferControllerUnitTest {
                 .source("SOURCE-NOMONEY")
                 .beneficiary("BENEFICIARY-ACCOUNT")
                 .amount(BigDecimal.valueOf(0.01))
-                .status(Status.SUCCESS)
                 .build()));
+    }
+
+    @Test
+    @DisplayName("Transfer Type Invalid")
+    void transfer_Type_invalid(){
+        // acceop only TRANSFER OR RESEND
+        assertThrows(InvalidTransferTypeException.class, () ->
+                controller.transfer(TransferCommand.builder()
+                        .no("TEST-1")
+                        .type(Type.REVERSAL)
+                        .source("SOURCE-NOMONEY")
+                        .beneficiary("BENEFICIARY-ACCOUNT")
+                        .amount(BigDecimal.valueOf(0.01))
+                        .build()));
+
+    }
+
+    @Test
+    @DisplayName("Resend transfer when transfer accepted response success")
+    void transfer_resend_already_done(){
+        // acceop only TRANSFER OR RESEND
+        given(journalRepository.existsById("TEST-1"))
+                .willReturn(Boolean.TRUE);
+        val result = controller.transfer(TransferCommand.builder()
+                .no("TEST-1")
+                .type(Type.RESEND)
+                .source("SOURCE-NOMONEY")
+                .beneficiary("BENEFICIARY-ACCOUNT")
+                .amount(BigDecimal.valueOf(0.01))
+                .build());
+
+        assertEquals(Status.SUCCESS,result.getBody().getStatus());
     }
 }

@@ -46,6 +46,20 @@ public class TransferController {
     @PostMapping("/transfer")
     public ResponseEntity<TransferCommand> transfer(@RequestBody TransferCommand command) {
 
+        switch (command.getType()){
+            case TRANSFER:
+                break;
+            case RESEND:
+                if(journalRepository.existsById(command.getNo())){
+                    command.setStatus(Status.SUCCESS);
+                    return ResponseEntity.ok(command);
+                }
+                break;
+            case REVERSAL:
+                default:
+                    throw new InvalidTransferTypeException();
+
+        }
         val amount = command.getAmount();
         if (amount.doubleValue() <= 0.0) {
             throw new InvalidTransferAmountException();
