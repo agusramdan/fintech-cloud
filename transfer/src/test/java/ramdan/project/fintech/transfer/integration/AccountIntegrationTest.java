@@ -1,30 +1,19 @@
 package ramdan.project.fintech.transfer.integration;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.val;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ramdan.project.fintech.transfer.domain.Account;
 import ramdan.project.fintech.transfer.dto.AccountDto;
-import ramdan.project.fintech.transfer.repository.AccountRepositry;
 
 import java.math.BigDecimal;
 
 import static org.hamcrest.Matchers.blankOrNullString;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -34,7 +23,7 @@ import static ramdan.project.fintech.transfer.utils.TestUtils.toJson;
 @SpringBootTest
 @AutoConfigureMockMvc
 //@WebMvcTest(TransferController.class)
-public class AccountIntegrationTest {
+class AccountIntegrationTest {
     //@MockBean
     //AccountRepositry accountRepositry;
     @Autowired

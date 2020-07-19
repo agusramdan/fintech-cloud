@@ -36,7 +36,7 @@ public class JournalController {
     @GetMapping("/journal/{number}")
     public ResponseEntity<JournalDto> getJournal(@PathVariable String number) {
 
-        if(!journalRepository.existsById(number)){
+        if (!journalRepository.existsById(number)) {
             throw new JournalNotFoundException();
         }
         val journal = journalRepository.getOne(number);

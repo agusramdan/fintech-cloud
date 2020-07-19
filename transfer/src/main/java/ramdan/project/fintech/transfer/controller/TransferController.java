@@ -3,14 +3,13 @@ package ramdan.project.fintech.transfer.controller;
 import lombok.val;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import ramdan.project.fintech.transfer.domain.Detail;
 import ramdan.project.fintech.transfer.domain.Journal;
-import ramdan.project.fintech.transfer.dto.JournalDto;
 import ramdan.project.fintech.transfer.dto.ReversalCommand;
 import ramdan.project.fintech.transfer.dto.Status;
 import ramdan.project.fintech.transfer.dto.TransferCommand;
@@ -48,13 +47,13 @@ public class TransferController {
     public ResponseEntity<TransferCommand> transfer(@RequestBody TransferCommand command) {
 
         val amount = command.getAmount();
-        if(amount.doubleValue()<= 0.0){
+        if (amount.doubleValue() <= 0.0) {
             throw new InvalidTransferAmountException();
         }
-        if(!accountRepositry.existsById(command.getSource())){
+        if (!accountRepositry.existsById(command.getSource())) {
             throw new InvalidSourceAccountException();
         }
-        if(!accountRepositry.existsById(command.getBeneficiary())){
+        if (!accountRepositry.existsById(command.getBeneficiary())) {
             throw new InvalidBeneficiaryAccountException();
         }
         val trx = Journal.builder()
@@ -66,7 +65,7 @@ public class TransferController {
 
         val source = accountRepositry.getOne(command.getSource());
         double availableBalance = source.getBalance().doubleValue();
-        if(availableBalance < amount.doubleValue()){
+        if (availableBalance < amount.doubleValue()) {
             throw new InsufficientFundsException();
         }
 
@@ -117,13 +116,13 @@ public class TransferController {
     @PostMapping("/reversal")
     public ResponseEntity<ReversalCommand> reversal(@RequestBody ReversalCommand command) {
 
-        if(!journalRepository.existsById(command.getNo())){
+        if (!journalRepository.existsById(command.getNo())) {
             throw new JournalNotFoundException();
         }
         val journal = journalRepository.getOne(command.getNo());
 
         // generate reversal number
-        val reversal = journal.getNumber()+"-REV";
+        val reversal = journal.getNumber() + "-REV";
         val reversalDate = new Date();
 
         journal.setReversal(reversal);
@@ -132,7 +131,7 @@ public class TransferController {
         journalRepository.flush();
 
         val reversalJournal = new Journal();
-        BeanUtils.copyProperties(journal,reversalJournal,"number","date","reversal","reversalDate");
+        BeanUtils.copyProperties(journal, reversalJournal, "number", "date", "reversal", "reversalDate");
         reversalJournal.setNumber(reversal);
         reversalJournal.setDate(reversalDate);
         journalRepository.save(reversalJournal);
@@ -140,10 +139,10 @@ public class TransferController {
 
         val details = detailRepository.findAllByJournal(journal.getNumber());
 
-        for (Detail detail :details) {
+        for (Detail detail : details) {
             // create reversal
             val reversalDetail = new Detail();
-            BeanUtils.copyProperties(detail,reversalDetail,"number","date","amount","balance");
+            BeanUtils.copyProperties(detail, reversalDetail, "number", "date", "amount", "balance");
             reversalDetail.setNumber(reversal);
             reversalDetail.setDate(reversalDate);
             val amountReversal = detail.getAmount().multiply(MINUS_ONE);

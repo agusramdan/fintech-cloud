@@ -9,11 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ramdan.project.fintech.transfer.controller.TransferController;
 import ramdan.project.fintech.transfer.dto.ReversalCommand;
 import ramdan.project.fintech.transfer.dto.TransferCommand;
 import ramdan.project.fintech.transfer.dto.Type;
@@ -25,12 +23,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ramdan.project.fintech.transfer.dto.Status.SUCCESS;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 //@WebMvcTest(TransferController.class)
-public class TransferIntegrationTest {
+class TransferIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -41,6 +38,7 @@ public class TransferIntegrationTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         return ow.writeValueAsString(anObject);
     }
+
     @Test
     @DisplayName("journal account history.")
     void journal_account_history() throws Exception {

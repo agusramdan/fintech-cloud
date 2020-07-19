@@ -4,30 +4,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import lombok.val;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ramdan.project.fintech.transfer.dto.TransferCommand;
-import ramdan.project.fintech.transfer.dto.Type;
 
-import java.math.BigDecimal;
-
-import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static ramdan.project.fintech.transfer.dto.Status.SUCCESS;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 //@WebMvcTest(TransferController.class)
-public class JournalIntegrationTest {
+class JournalIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
