@@ -111,5 +111,23 @@ public class TransferIntegrationTest {
 
     }
 
+    @Test
+    @DisplayName("reversal jurnal not exist failed.")
+    void reversal_journal_not_exist_success() throws Exception {
+        val trf = ReversalCommand.builder()
+                .no("REV-NOT-EXIST")
+                .type(Type.REVERSAL)
+                .source("REV-ACCOUNT-D")
+                .amount(BigDecimal.TEN)
+                .beneficiary("REV-ACCOUNT-K")
+                .build();
+
+        mockMvc.perform(post("/reversal")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(trf)))
+                .andExpect(status().isNotFound())
+                .andExpect(status().reason("Journal not found."))
+        ;
+    }
 
 }

@@ -14,10 +14,7 @@ import ramdan.project.fintech.transfer.dto.JournalDto;
 import ramdan.project.fintech.transfer.dto.ReversalCommand;
 import ramdan.project.fintech.transfer.dto.Status;
 import ramdan.project.fintech.transfer.dto.TransferCommand;
-import ramdan.project.fintech.transfer.exception.InsufficientFundsException;
-import ramdan.project.fintech.transfer.exception.InvalidBeneficiaryAccountException;
-import ramdan.project.fintech.transfer.exception.InvalidSourceAccountException;
-import ramdan.project.fintech.transfer.exception.InvalidTransferAmountException;
+import ramdan.project.fintech.transfer.exception.*;
 import ramdan.project.fintech.transfer.mapper.DetailMapper;
 import ramdan.project.fintech.transfer.mapper.JournalMapper;
 import ramdan.project.fintech.transfer.repository.AccountRepositry;
@@ -120,6 +117,9 @@ public class TransferController {
     @PostMapping("/reversal")
     public ResponseEntity<ReversalCommand> reversal(@RequestBody ReversalCommand command) {
 
+        if(!journalRepository.existsById(command.getNo())){
+            throw new JournalNotFoundException();
+        }
         val journal = journalRepository.getOne(command.getNo());
 
         // generate reversal number
