@@ -12,6 +12,9 @@ import ramdan.project.fintech.transfer.domain.Journal;
 import ramdan.project.fintech.transfer.dto.JournalDto;
 import ramdan.project.fintech.transfer.dto.Status;
 import ramdan.project.fintech.transfer.dto.TransferCommand;
+import ramdan.project.fintech.transfer.exception.InsufficientFundsException;
+import ramdan.project.fintech.transfer.exception.InvalidBeneficiaryAccountException;
+import ramdan.project.fintech.transfer.exception.InvalidSourceAccountException;
 import ramdan.project.fintech.transfer.exception.InvalidTransferAmountException;
 import ramdan.project.fintech.transfer.mapper.DetailMapper;
 import ramdan.project.fintech.transfer.mapper.JournalMapper;
@@ -49,6 +52,12 @@ public class TransferController {
         if(amount.doubleValue()<= 0.0){
             throw new InvalidTransferAmountException();
         }
+        if(!accountRepositry.existsById(command.getSource())){
+            throw new InvalidSourceAccountException();
+        }
+        if(!accountRepositry.existsById(command.getBeneficiary())){
+            throw new InvalidBeneficiaryAccountException();
+        }
         val trx = Journal.builder()
                 .number(command.getNo())
                 .amount(amount)
@@ -57,6 +66,11 @@ public class TransferController {
                 .build();
 
         val source = accountRepositry.getOne(command.getSource());
+        double availableBalance = source.getBalance().doubleValue();
+        if(availableBalance < amount.doubleValue()){
+            throw new InsufficientFundsException();
+        }
+
         source.setBalance(source.getBalance().subtract(amount));
         accountRepositry.save(source);
 
