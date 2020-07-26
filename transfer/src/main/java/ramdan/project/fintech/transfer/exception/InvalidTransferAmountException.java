@@ -6,5 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Invalid transfer amount.")
 public class InvalidTransferAmountException extends RuntimeException {
     public InvalidTransferAmountException() {
+        super(null,null,false,false);
     }
+
 }
